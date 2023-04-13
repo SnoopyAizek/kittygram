@@ -1,0 +1,2 @@
+# kittygram
+Тестовый проект Django
