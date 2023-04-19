@@ -1,8 +1,8 @@
 from django.urls import path
 
-from .views import cat_detail, CatListApi
+from .views import CatListApi, CatDetailApi
 
 urlpatterns = [
     path('cats/', CatListApi.as_view()),
-    path('cats/<int:pk>/', cat_detail),
+    path('cats/<int:pk>/', CatDetailApi.as_view()),
 ]
