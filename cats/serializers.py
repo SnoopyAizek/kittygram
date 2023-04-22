@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Cat, Owner, Achievement, AchievementCat
+from .models import Cat, Owner, Achievement, AchievementCat, FavoriteToy
 
 
 class AchievementSerializer(serializers.ModelSerializer):
@@ -14,7 +14,8 @@ class CatSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Cat
-        fields = ('id', 'name', 'color', 'birth_year', 'owner', 'achievements')
+        fields = ('id', 'name', 'color', 'birth_year', 'owner',
+                  'achievements', 'created', 'changed', 'is_purebred', 'favorite_toy', 'deleted')
 
     def create(self, validated_data):
         if 'achievements' not in self.initial_data:
@@ -31,8 +32,16 @@ class CatSerializer(serializers.ModelSerializer):
 
 
 class OwnerSerializer(serializers.ModelSerializer):
-    # cats = serializers.StringRelatedField(many=True)
+    cats = CatSerializer(many=True, required=False)
 
     class Meta:
         model = Owner
         fields = ('id', 'first_name', 'last_name', 'cats')
+
+
+class FavoriteToySerializer(serializers.ModelSerializer):
+    cats = CatSerializer(many=True, required=False)
+
+    class Meta:
+        model = FavoriteToy
+        fields = ('id', 'name', 'cats')

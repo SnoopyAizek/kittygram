@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 
 class Achievement(models.Model):
@@ -16,6 +17,13 @@ class Owner(models.Model):
         return f'{self.first_name} {self.last_name}'
 
 
+class FavoriteToy(models.Model):
+    name = models.CharField(max_length=128)
+
+    def __str__(self):
+        return self.name
+
+
 class Cat(models.Model):
     class Meta:
         db_table = 'cats'
@@ -26,9 +34,19 @@ class Cat(models.Model):
         Owner, related_name='cats', on_delete=models.CASCADE)
     achievements = models.ManyToManyField(
         Achievement, through='AchievementCat')
+    created = models.DateTimeField(auto_now_add=True)
+    changed = models.DateTimeField(auto_now=True)
+    is_purebred = models.BooleanField(default=False)
+    favorite_toy = models.ForeignKey(
+        FavoriteToy, on_delete=models.PROTECT, related_name='cats')
+    deleted = models.DateTimeField(null=True)
 
     def __str__(self):
         return self.name
+
+    def delete(self):
+        self.deleted = datetime.now()
+        self.save()
 
 
 class AchievementCat(models.Model):
